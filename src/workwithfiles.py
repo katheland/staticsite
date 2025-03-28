@@ -23,7 +23,7 @@ def copy_to_dir(source, destination):
             shutil.copy(item_path, destination)
 
 # generates a webpage from markdown
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     print(f"generating page from {from_path} to {dest_path} using {template_path}")
     
     # first we read the source files
@@ -37,7 +37,7 @@ def generate_page(from_path, template_path, dest_path):
     # next we convert the html, grab the title, and insert them into the template
     markdown_html = markdown_to_html_node(markdown_text).to_html()
     title = extract_title(markdown_text)
-    new_page = template_text.replace("{{ Title }}", title).replace("{{ Content }}", markdown_html)
+    new_page = template_text.replace("{{ Title }}", title).replace("{{ Content }}", markdown_html).replace('href="/', f'href="{basepath}').replace('src="/', f'src="{basepath}')
     
     # and now we write this to a new file at dest_path
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
@@ -45,7 +45,7 @@ def generate_page(from_path, template_path, dest_path):
         f.write(new_page)
     
 # recursively crawls the content directory and generates html files for every markdown file found
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
     print(f"generating pages recursively from {dir_path_content} to {dest_dir_path} using {template_path}")
     dir_contents = os.listdir(dir_path_content)
     for content in dir_contents:
@@ -54,10 +54,10 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
         if os.path.isdir(from_path):
             dest_path = os.path.join(dest_dir_path, content)
             os.mkdir(dest_path)
-            generate_pages_recursive(from_path, template_path, dest_path)
+            generate_pages_recursive(from_path, template_path, dest_path, basepath)
         elif os.path.isfile(from_path):
             dest_file = os.path.join(dest_dir_path, os.path.splitext(content)[0]) + ".html"
-            print(f"generate_page({from_path}, {template_path}, {dest_file})")
-            generate_page(from_path, template_path, dest_file)
+            print(f"generate_page({from_path}, {template_path}, {dest_file})", basepath)
+            generate_page(from_path, template_path, dest_file, basepath)
         else:
             raise Exception("How are we here?")
