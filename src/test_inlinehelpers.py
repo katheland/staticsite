@@ -25,20 +25,20 @@ class TestInlineHelpers(unittest.TestCase):
     
     def testSplitTextNode(self):
         node = TextNode("Plain text", TextType.TEXT)
-        node2 = TextNode("*Italics*", TextType.TEXT)
+        node2 = TextNode("_Italics_", TextType.TEXT)
         node3 = TextNode("URL text", TextType.LINK, "www.boot.dev")
         node4 = TextNode("The **bold** is contained", TextType.TEXT)
         node5 = TextNode("`There's some code` on the left", TextType.TEXT)
         node6 = TextNode("And now some code `on the right`", TextType.TEXT)
         node7 = TextNode("Read it **like** a bad **comic book**", TextType.TEXT)
-        node8 = TextNode("This should *only* pick up the **bold**, not the `others`, okay?", TextType.TEXT)
-        self.assertEqual(split_nodes_delimiter([node, node2], "*", TextType.ITALIC), [TextNode("Plain text", TextType.TEXT), TextNode("Italics", TextType.ITALIC)])
+        node8 = TextNode("This should _only_ pick up the **bold**, not the `others`, okay?", TextType.TEXT)
+        self.assertEqual(split_nodes_delimiter([node, node2], "_", TextType.ITALIC), [TextNode("Plain text", TextType.TEXT), TextNode("Italics", TextType.ITALIC)])
         self.assertEqual(split_nodes_delimiter([node3], "`", TextType.CODE), [TextNode("URL text", TextType.LINK, "www.boot.dev")])
         self.assertEqual(split_nodes_delimiter([node4], "**", TextType.BOLD), [TextNode("The ", TextType.TEXT), TextNode("bold", TextType.BOLD), TextNode(" is contained", TextType.TEXT)])
         self.assertEqual(split_nodes_delimiter([node5], "`", TextType.CODE), [TextNode("There's some code", TextType.CODE), TextNode(" on the left", TextType.TEXT)])
         self.assertEqual(split_nodes_delimiter([node6], "`", TextType.CODE), [TextNode("And now some code ", TextType.TEXT), TextNode("on the right", TextType.CODE)])
         self.assertEqual(split_nodes_delimiter([node7], "**", TextType.BOLD), [TextNode("Read it ", TextType.TEXT), TextNode("like", TextType.BOLD), TextNode(" a bad ", TextType.TEXT), TextNode("comic book", TextType.BOLD)])
-        self.assertEqual(split_nodes_delimiter([node8], "**", TextType.BOLD), [TextNode("This should *only* pick up the ", TextType.TEXT), TextNode("bold", TextType.BOLD), TextNode(", not the `others`, okay?", TextType.TEXT)])
+        self.assertEqual(split_nodes_delimiter([node8], "**", TextType.BOLD), [TextNode("This should _only_ pick up the ", TextType.TEXT), TextNode("bold", TextType.BOLD), TextNode(", not the `others`, okay?", TextType.TEXT)])
         
     def testSplitTextNodeError(self):
         node9 = TextNode("This one should **fail*", TextType.TEXT)
@@ -108,12 +108,12 @@ class TestInlineHelpers(unittest.TestCase):
         text = ""
         text2 = "normal"
         text3 = "**bold**"
-        text4 = "*italic*"
+        text4 = "_italic_"
         text5 = "`code`"
         text6 = "![image](image.com)"
         text7 = "[link](link.com)"
-        text8 = "This is **text** with an *italic* word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
-        text9 = "*Have some italics* **before the bold**"
+        text8 = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        text9 = "_Have some italics_ **before the bold**"
         self.assertEqual(text_to_textnodes(text), [])
         self.assertEqual(text_to_textnodes(text2), [TextNode("normal", TextType.TEXT)])
         self.assertEqual(text_to_textnodes(text3), [TextNode("bold", TextType.BOLD)])

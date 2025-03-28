@@ -14,7 +14,7 @@ class TestMarkdownToHTML(unittest.TestCase):
         text6 = "- unordered\n* unordered"
         text7 = "1. one\n2. two\n3. three\n4. four\n5. five\n6. six\n7. seven\n8. eight\n9. nine\n10. ten"
         text8 = "```here is some code```"
-        text9 = "**Bold** or *italic*"
+        text9 = "**Bold** or _italic_"
         text10 = "# heading\n\nparagraph\n\n```code```"
         self.assertEqual(markdown_to_html_node(text), ParentNode("div", []))
         self.assertEqual(markdown_to_html_node(text2), ParentNode("div", [ParentNode("p", [LeafNode(None, "paragraph"), LeafNode(None, "paragraph")])]))
@@ -31,12 +31,12 @@ class TestMarkdownToHTML(unittest.TestCase):
     def testTextToChildren(self):
         text = ""
         text2 = "plain"
-        text3 = "*italic*"
+        text3 = "_italic_"
         text4 = "**bold**"
         text5 = "`code`"
         text6 = "[url](url.com)"
         text7 = "![img](img.com)"
-        text8 = "**Bold** or *italic*"
+        text8 = "**Bold** or _italic_"
         self.assertEqual(text_to_children(text), [])
         self.assertEqual(text_to_children(text2), [LeafNode(None, "plain")])
         self.assertEqual(text_to_children(text3), [LeafNode("i", "italic")])
